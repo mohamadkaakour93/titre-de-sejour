@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 require('dotenv').config();
@@ -8,12 +8,14 @@ const urlToCheck = 'https://www.rdv-prefecture.interieur.gouv.fr/rdvpref/reserva
 
 // Configurer le transporteur d'e-mails
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // Utilisez Gmail ou un autre service
-  auth: {
-    user: process.env.EMAIL_USER, // Votre e-mail
-    pass: process.env.EMAIL_PASS, // Mot de passe ou token d'application
-  },
-});
+    host: "smtp-relay.brevo.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
 
 // Fonction pour envoyer une notification de démarrage
 const sendStartNotification = async () => {
@@ -79,7 +81,7 @@ const checkAvailability = async () => {
   const browser = await puppeteer.launch({
     headless: true,
     executablePath: '/usr/bin/chromium-browser', // Chemin vers Chromium
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
   const page = await browser.newPage();
