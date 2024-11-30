@@ -55,7 +55,12 @@ const sendAvailabilityNotification = async () => {
 const checkAvailability = async () => {
   try {
     console.log('[INFO] Récupération de la page...');
-    const response = await axios.get(urlToCheck); // Récupérer la page
+    const response = await axios.get(urlToCheck, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        },
+      });
+
     const $ = cheerio.load(response.data); // Charger la page dans Cheerio
 
     // Vérifiez si un texte ou un élément spécifique indique une disponibilité
