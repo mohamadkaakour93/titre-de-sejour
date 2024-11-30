@@ -114,4 +114,4 @@ const browser = await puppeteer.launch({
 })();
 
 // Configurer l'intervalle pour vérifier toutes les 10 minutes
-setInterval(checkAvailability, 10 * 60 * 1000);
+setInterval(checkAvailability, 3 * 60 * 1000);
