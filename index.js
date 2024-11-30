@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 require('dotenv').config();
@@ -15,7 +15,24 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Fonction pour envoyer une notification par e-mail
+// Fonction pour envoyer une notification de démarrage
+const sendStartNotification = async () => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.NOTIFICATION_EMAIL,
+    subject: 'Scraping Démarré - Carte de Séjour',
+    text: 'Le script de scraping pour vérifier les rendez-vous disponibles pour le titre de séjour a démarré.',
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('[EMAIL] Notification de démarrage envoyée.');
+  } catch (error) {
+    console.error('[EMAIL] Erreur lors de l\'envoi de la notification de démarrage :', error);
+  }
+};
+
+// Fonction pour envoyer une notification de disponibilité
 const sendNotification = async () => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -59,16 +76,11 @@ const saveCookies = async (page) => {
 // Fonction principale pour vérifier la disponibilité
 const checkAvailability = async () => {
   console.log('[INFO] Lancement de la vérification...');
-  const puppeteer = require('puppeteer-core');
-
-const browser = await puppeteer.launch({
-  headless: true,
-  executablePath: '/usr/bin/chromium-browser', // Chemin vers Chromium
-  args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage',
-    '--disable-gpu'],
-});
-
-  
+  const browser = await puppeteer.launch({
+    headless: true,
+    executablePath: '/usr/bin/chromium-browser', // Chemin vers Chromium
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
+  });
 
   const page = await browser.newPage();
 
@@ -81,8 +93,7 @@ const browser = await puppeteer.launch({
 
     // Si Captcha présent, résoudre manuellement
     console.log('[INFO] Vérifiez si un Captcha est présent.');
-    await new Promise(resolve => setTimeout(resolve, 10000));
-// Attendre 10 secondes pour résoudre le Captcha manuellement
+    await new Promise((resolve) => setTimeout(resolve, 10000)); // Attendre 10 secondes pour résoudre le Captcha manuellement
 
     // Sauvegarder les cookies après résolution du Captcha
     await saveCookies(page);
@@ -109,9 +120,10 @@ const browser = await puppeteer.launch({
 
 // Exécuter immédiatement pour vérifier que tout fonctionne
 (async () => {
+  await sendStartNotification(); // Envoi de la notification de démarrage
   await checkAvailability();
   console.log('[INFO] Première exécution terminée. Si tout fonctionne, le script continuera périodiquement.');
 })();
 
-// Configurer l'intervalle pour vérifier toutes les 10 minutes
+// Configurer l'intervalle pour vérifier toutes les 3 minutes
 setInterval(checkAvailability, 3 * 60 * 1000);
