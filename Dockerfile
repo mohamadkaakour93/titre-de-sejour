@@ -1,5 +1,8 @@
-FROM ghcr.io/puppeteer/puppeteer:23.9.0
+FROM node:20
 
+# Install Snap and Chromium
+RUN apt-get update && apt-get install -y snapd && \
+    snap install chromium
 
 WORKDIR /usr/src/app
 

@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 require('dotenv').config();
@@ -79,10 +79,10 @@ const saveCookies = async (page) => {
 const checkAvailability = async () => {
   console.log('[INFO] Starting the verification process...');
   const browser = await puppeteer.launch({
+    executablePath: '/snap/bin/chromium',
     headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
-
   
   
 
