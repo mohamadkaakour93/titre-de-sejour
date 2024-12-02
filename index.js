@@ -79,7 +79,7 @@ const saveCookies = async (page) => {
 const checkAvailability = async () => {
   console.log('[INFO] Starting the verification process...');
   const browser = await puppeteer.launch({
-    executablePath: '/snap/bin/chromium',
+    executablePath: '/usr/bin/chromium',
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
